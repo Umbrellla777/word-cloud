@@ -4,7 +4,7 @@ import numpy as np
 from PIL import Image
 
 shapes = {
-    "1": ("Квадрат", None),       
+    "1": ("Квадрат", None),
     "2": ("Сердце", "mask_heart.png"),
     "3": ("Звезда", "mask_star.png"),
     "4": ("Облако", "mask_cloud.png"),
@@ -25,7 +25,6 @@ colors = {
     "9": ("Контраст (coolwarm)", "coolwarm")
 }
 
-# Доступные фоны
 backgrounds = {
     "1": ("Белый", "white"),
     "2": ("Черный", "black")
@@ -38,27 +37,31 @@ def generate_wordcloud(text_file, mask_file=None, output_file="wordcloud.png",
 
     mask = None
     if mask_file:
-        mask_img = Image.open(mask_file).convert("L") 
+        mask_img = Image.open(mask_file).convert("L")
         mask = np.array(mask_img)
 
     wc = WordCloud(
-        font_path="arial.ttf", 
+        font_path="arial.ttf",  
         width=2000,
         height=2000,
         background_color=background,
         colormap=colormap,
-        mask=mask
+        mask=mask,
+        max_words=5000,  
+        min_font_size=10, 
+        collocations=False   
     ).generate(text)
 
+    # Сохраняем итоговое облако
     wc.to_file(output_file)
     print(f"✅ Итоговое облако слов сохранено как {output_file}")
 
+    # Отображаем
     plt.figure(figsize=(20, 20))
     plt.imshow(wc, interpolation="bilinear")
     plt.axis("off")
     plt.tight_layout()
     plt.show()
-
 
 if __name__ == "__main__":
     print("Выбери форму облака:")
